@@ -8,7 +8,6 @@ export default function Map() {
   useEffect(() => {
     const initMap = async () => {
       try {
-        // SDK가 완전히 로드된 뒤 실행
         await new Promise((resolve) => window.kakao.maps.load(resolve));
 
         const { maps } = window.kakao;
@@ -71,20 +70,17 @@ export default function Map() {
   }, []);
 
   return (
-    <div style={{ padding: 16 }}>
+    <div className="p-4">
       <div
         ref={mapRef}
         id="map"
-        style={{
-          width: "100%",
-          height: 420, // 높이 필수
-          border: "1px solid #ddd",
-          borderRadius: 8,
-        }}
+        className="w-full h-[420px] border border-gray-200 rounded-lg"
       />
-      {!ready && !error && <p style={{ marginTop: 8 }}>지도를 불러오는 중…</p>}
+      {!ready && !error && (
+        <p className="mt-2 text-sm text-gray-600">지도를 불러오는 중…</p>
+      )}
       {error && (
-        <p style={{ marginTop: 8, color: "crimson" }}>
+        <p className="mt-2 text-sm text-red-600">
           에러: {error} (개발자도구 Network 확인)
         </p>
       )}

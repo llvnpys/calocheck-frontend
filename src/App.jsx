@@ -1,13 +1,29 @@
-import {} from "react";
-import "./App.css";
+import { useState } from "react";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
 import Map from "./components/Map";
-function App() {
+
+export default function App() {
+  const [filters, setFilters] = useState();
+
+  const handleSearch = (f) => {
+    // 추후 수정
+    console.log("검색 실행:", f);
+  };
+
   return (
-    <>
-      <h1>CaloCheck</h1>
-      <Map />
-    </>
+    <div className="min-h-screen bg-white">
+      <Header />
+      <div className="flex">
+        <Sidebar
+          value={filters}
+          onChange={setFilters}
+          onSearch={handleSearch}
+        />
+        <main className="flex-1">
+          <Map />
+        </main>
+      </div>
+    </div>
   );
 }
-
-export default App;
