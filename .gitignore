@@ -23,7 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
-### Doㅊㅇcker ###
+# Vite cache
+.vite
+
+### Docker ###
 .dockerignore
 
 .env
