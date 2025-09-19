@@ -4,24 +4,15 @@ import Sidebar from "./components/Sidebar";
 import Map from "./components/Map";
 
 export default function App() {
-  const [filters, setFilters] = useState();
-
-  const handleSearch = (f) => {
-    // 추후 수정
-    console.log("검색 실행:", f);
-  };
-
+  const [searchParams, setSearchParams] = useState(null);
   return (
     <div className="min-h-screen bg-white">
       <Header />
+
       <div className="flex">
-        <Sidebar
-          value={filters}
-          onChange={setFilters}
-          onSearch={handleSearch}
-        />
+        <Sidebar setSearchParams={setSearchParams} />
         <main className="flex-1">
-          <Map />
+          <Map searchParams={searchParams} />
         </main>
       </div>
     </div>

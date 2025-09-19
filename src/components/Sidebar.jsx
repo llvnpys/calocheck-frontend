@@ -1,94 +1,81 @@
-import { useState, useEffect } from "react";
-import RangeField from "./RangeField";
+// src/components/Sidebar.jsx
+import { useState } from "react";
 
 const defaultFilters = {
   categories: { cafe: true, restaurant: true },
   calories: { min: "", max: "" },
+  protein: { min: "", max: "" },
+  fat: { min: "", max: "" },
+  carb: { min: "", max: "" },
 };
 
-export default function Sidebar({ value, onChange, onSearch }) {
-  const [filters, setFilters] = useState(value ?? defaultFilters);
+export default function Sidebar({ setSearchParams }) {
+  const [filters, setFilters] = useState(defaultFilters);
 
-  useEffect(() => {
-    if (value) setFilters(value);
-  }, [value]);
+  const toggleCategory = (key) =>
+    setFilters((d) => ({
+      ...d,
+      categories: { ...d.categories, [key]: !d.categories[key] },
+    }));
 
-  const update = (next) => {
-    setFilters(next);
-    onChange?.(next);
-  };
-
-  const toggleCategory = (key) => {
-    update({
-      ...filters,
-      categories: { ...filters.categories, [key]: !filters.categories[key] },
-    });
-  };
-
-  // const updateRange = (field, val) => {
-  //   update({ ...filters, calories: { ...filters.calories, [field]: val } });
-  // };
+  const setRange = (key, field, val) =>
+    setFilters((d) => ({ ...d, [key]: { ...d[key], [field]: val } }));
 
   return (
-    <aside
-      className="
-        w-58 shrink-0 border-r border-gray-200 bg-gray-50
-        p-4 sticky top-12 h-[calc(100vh-48px)] overflow-y-auto
-      "
-    >
-      {/* 카테고리 */}
+    <aside className="w-58 shrink-0 border-r border-gray-200 bg-gray-50 p-4 sticky top-[56px] h-[calc(100vh-56px)] overflow-y-auto">
+      {/* 카테고리 (간단버전) */}
       <div className="mb-4">
         <div className="text-sm font-semibold mb-2">카테고리</div>
-        <label className="flex items-center gap-2 mb-2 text-sm">
-          <input
-            type="checkbox"
-            checked={!!filters.categories.restaurant}
-            onChange={() => toggleCategory("restaurant")}
-            className="accent-black"
-          />
-          음식점
-        </label>
-        <label className="flex items-center gap-2 mb-2 text-sm">
-          <input
-            type="checkbox"
-            checked={!!filters.categories.cafe}
-            onChange={() => toggleCategory("cafe")}
-            className="accent-black"
-          />
-          카페
-        </label>
+        {[
+          { key: "cafe", label: "카페" },
+          { key: "restaurant", label: "음식점" },
+        ].map((c) => (
+          <label key={c.key} className="block mb-1">
+            <input
+              type="checkbox"
+              className="mr-2"
+              checked={!!filters.categories[c.key]}
+              onChange={() => toggleCategory(c.key)}
+            />
+            {c.label}
+          </label>
+        ))}
       </div>
 
-      {/* 영양성분 필드 */}
-      <RangeField
-        label="칼로리"
-        value={filters.calories}
-        onChange={(v) => update({ ...filters, calories: v })}
-        widthClass="w-24"
-      />
-      <RangeField
-        label="단백질"
-        value={filters.protein}
-        onChange={(v) => update({ ...filters, protein: v })}
-        widthClass="w-24"
-      />
-      <RangeField
-        label="지방"
-        value={filters.fat}
-        onChange={(v) => update({ ...filters, fat: v })}
-        widthClass="w-24"
-      />
-      <RangeField
-        label="탄수화물"
-        value={filters.carb}
-        onChange={(v) => update({ ...filters, carb: v })}
-        widthClass="w-24"
-      />
+      {/* 매크로(칼로리/단백질/지방/탄수) */}
+      {[
+        { key: "calories", label: "칼로리" },
+        { key: "protein", label: "단백질" },
+        { key: "fat", label: "지방" },
+        { key: "carb", label: "탄수화물" },
+      ].map((m) => (
+        <div key={m.key} className="mb-4">
+          <div className="text-sm font-semibold mb-2">{m.label}</div>
+          <div className="flex gap-2">
+            <input
+              inputMode="numeric"
+              placeholder="최소"
+              className="w-24 rounded border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              value={filters[m.key].min}
+              onChange={(e) => setRange(m.key, "min", e.target.value)}
+            />
+            <input
+              inputMode="numeric"
+              placeholder="최대"
+              className="w-24 rounded border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              value={filters[m.key].max}
+              onChange={(e) => setRange(m.key, "max", e.target.value)}
+            />
+          </div>
+        </div>
+      ))}
 
-      {/* 검색 */}
       <button
-        onClick={() => onSearch?.(filters)}
-        className="w-full rounded bg-black text-white py-2 text-sm font-semibold hover:bg-black/90 transition-colors"
+        onClick={() => {
+          console.log("[Sidebar] search click →", filters);
+          setSearchParams(filters);
+        }}
+        className="w-full mt-2 rounded px-3 py-2 bg-black text-white font-semibold hover:bg-gray-800 active:scale-[0.99] transition"
       >
         검색
       </button>
