@@ -9,11 +9,11 @@ export default function App() {
     <div className="min-h-screen bg-white">
       <Header />
 
-      <div className="flex">
-        <Sidebar setSearchParams={setSearchParams} />
+      <div className="relative">
         <main className="flex-1">
           <Map searchParams={searchParams} />
         </main>
+        <Sidebar setSearchParams={setSearchParams} />
       </div>
     </div>
   );
